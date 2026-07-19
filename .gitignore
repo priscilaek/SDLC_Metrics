@@ -1,0 +1,5 @@
+# Raw data exports (kept local only)
+2026*/
+*.csv
+*.xlsx
+.DS_Store
