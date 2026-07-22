@@ -1426,12 +1426,23 @@ function renderQDI(sps){
 }
 
 function renderDensity(sps){
+  let lastReadyDate=null;
+  sps.forEach(s=>{
+    (store.stories[s]||[]).forEach(r=>{
+      const v=r['Ready for UAT Tracking'];
+      if(!hasVal(v)) return;
+      const d=new Date(v);
+      if(isNaN(d.getTime())) return;
+      if(!lastReadyDate||d>lastReadyDate) lastReadyDate=d;
+    });
+  });
+  const lastReadyLabel=lastReadyDate?formatDate(lastReadyDate):'—';
   document.getElementById('dnsContent').innerHTML=`
   <div class="g2">
     <div class="card"><div class="ctitle">Defect Density by area</div><div style="position:relative;height:260px"><canvas id="dComp"></canvas></div></div>
     <div class="card"><div class="ctitle">Average density per sprint</div><div style="position:relative;height:260px"><canvas id="dAvg"></canvas></div></div>
   </div>
-  <div class="card" style="overflow-x:auto"><div class="ctitle">Defect Density table — Testing bugs ÷ SP tracking</div><table id="dTable"></table></div>
+  <div class="card" style="overflow-x:auto"><div class="ctitle">Defect Density table — Testing bugs ÷ SP UAT Tracking <span style="font-weight:400;color:#aaa">(last Ready for UAT Tracking: ${lastReadyLabel})</span></div><table id="dTable"></table></div>
   <div class="card"><div class="ctitle">💡 Recommendations and actions — Defect Density</div><div id="dnsRec" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-top:8px"></div></div>
   <div id="qdiContent"></div>`;
 
